@@ -34,7 +34,7 @@ export default function MobileMenu({ links = [] }) {
                   </a>
                 </li>
               ))}
-              <li><a href="#signup" className="mt-2 inline-block rounded-full bg-black px-4 py-2 text-white">Sign up</a></li>
+              <li><a href="/signup" className="mt-2 inline-block rounded-full bg-black px-4 py-2 text-white">Sign up</a></li>
             </ul>
           </nav>
         </div>

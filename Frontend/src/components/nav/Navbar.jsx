@@ -27,7 +27,7 @@ export default function Navbar() {
               {l.label}
             </a>
           ))}
-          <a href="#signup" className="ml-3 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white">
+          <a href="/signup" className="ml-3 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white">
             Sign up
           </a>
         </nav>

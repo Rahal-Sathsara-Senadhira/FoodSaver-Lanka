@@ -27,11 +27,11 @@ export default function Hero() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-5">
-            <Button href="#donate" className="px-7 py-3.5 shadow-[0_10px_24px_rgba(0,0,0,0.2)]">
+            <Button href="/donate" className="px-7 py-3.5 shadow-[0_10px_24px_rgba(0,0,0,0.2)]">
               🍛 Donate Food
             </Button>
             <Button
-              href="#request"
+              href="/signup"
               variant="secondary"
               className="px-7 py-3.5 shadow-[0_6px_14px_rgba(0,0,0,0.08)]"
             >
