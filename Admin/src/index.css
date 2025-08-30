@@ -2,5 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* optional: smooth fonts */
-html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+:root {
+  color-scheme: light dark;
+}
+
+/* Scrollbars */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.4); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(100,116,139,0.7); }

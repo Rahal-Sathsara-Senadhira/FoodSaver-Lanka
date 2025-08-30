@@ -2,7 +2,7 @@ import React from "react";
 
 /**
  * Minimal data table.
- * - columns: [{ key, title, render? , dataIndex? }]
+ * - columns: [{ key, title, render?, dataIndex? }]
  *   Use a UNIQUE `key` for each column (e.g. "actions" for buttons).
  *   If the data field is different from the column key, pass `dataIndex`.
  * - rows: [{ id: string, ... }]
@@ -11,10 +11,10 @@ import React from "react";
 export default function Table({ columns, rows, empty = "No data", rowKey = "id" }) {
   // Dev guards to catch common mistakes early
   if (import.meta?.env?.DEV) {
-    const keys = columns.map(c => c.key);
+    const keys = columns.map((c) => c.key);
     const dupes = keys.filter((k, i) => keys.indexOf(k) !== i);
     if (dupes.length) console.error("Table: duplicate column keys:", dupes);
-    if (!rows.every(r => r?.[rowKey] != null)) {
+    if (!rows.every((r) => r?.[rowKey] != null)) {
       console.error(`Table: some rows are missing rowKey "${rowKey}"`);
     }
   }
