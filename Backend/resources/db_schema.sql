@@ -69,31 +69,6 @@ CREATE TABLE IF NOT EXISTS delivery_drivers (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Deliveries table
-CREATE TABLE IF NOT EXISTS deliveries (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
-    driver_id INT,
-    ngo_id INT NOT NULL,
-    requester_id INT NOT NULL,
-    restaurant_name VARCHAR(255) NOT NULL,
-    food_item VARCHAR(255) NOT NULL,
-    food_amount VARCHAR(100) NOT NULL,
-    pickup_location VARCHAR(500) NOT NULL,
-    delivery_location VARCHAR(500) NOT NULL,
-    pickup_lat DECIMAL(10, 8),
-    pickup_lng DECIMAL(11, 8),
-    delivery_lat DECIMAL(10, 8),
-    delivery_lng DECIMAL(11, 8),
-    status VARCHAR(50) DEFAULT 'pending',
-    estimated_delivery_time TIMESTAMP NULL,
-    actual_delivery_time TIMESTAMP NULL,
-    delivery_notes TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (driver_id) REFERENCES delivery_drivers(id) ON DELETE SET NULL
-);
-
 -- Index for faster lookups
 CREATE INDEX idx_username ON users (username);
 CREATE INDEX idx_donor_id ON donor_orders (donor_id);
@@ -106,8 +81,3 @@ CREATE INDEX idx_total_credits ON restaurant_credits (total_credits DESC);
 -- Driver system indexes
 CREATE INDEX idx_driver_available ON delivery_drivers (is_available);
 CREATE INDEX idx_driver_vehicle ON delivery_drivers (vehicle_type);
-
--- Delivery indexes
-CREATE INDEX idx_delivery_status ON deliveries (status);
-CREATE INDEX idx_delivery_driver ON deliveries (driver_id);
-CREATE INDEX idx_delivery_order ON deliveries (order_id);
