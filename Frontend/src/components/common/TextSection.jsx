@@ -14,7 +14,7 @@ export default function TextSection({ title, content, className = '' }) {
           )}
           {content && (
             <div
-              className="text-[32px] leading-[100%] tracking-[0px] font-normal text-gray-600"
+              className="text-[22px] leading-[100%] tracking-[0px] font-normal text-gray-600"
               style={{ fontFamily: 'Poppins, sans-serif' }}
             >
               {content}

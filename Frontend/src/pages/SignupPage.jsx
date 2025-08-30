@@ -137,6 +137,9 @@ export default function SignupPage() {
                 <div className="mt-6 text-center text-sm text-gray-700">
                   Already a member? <a href="/login" className="text-yellow-600 font-semibold">Login</a>
                 </div>
+                <div className="mt-4 text-center">
+                  <a href="/" className="bg-[#212733] text-white px-5 py-2 rounded shadow hover:bg-[#343a40] transition">Go to Home Page</a>
+                </div>
               </div>
             </div>
           </div>
