@@ -1,8 +1,5 @@
-import * as m from './mock';
-
+// Placeholder layer to swap to real API later.
 export const api = {
-  approvals: async () => ({ ngos: m.pendingNGOs, donors: m.pendingDonors, drivers: m.pendingVolunteers }),
-  donations: async () => m.donationOffers,
-  drivers:   async () => m.drivers,
-  batches:   async () => m.distributionBatches,
+  approve: async (kind, payload) => ({ ok: true, kind, payload }),
+  assignDriver: async (payload) => ({ ok: true, payload }),
 };

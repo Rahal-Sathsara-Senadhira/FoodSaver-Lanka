@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   BadgeCheck,
@@ -8,8 +8,8 @@ import {
   Package,
 } from "lucide-react";
 
-const items = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
+const NAV = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/approvals", label: "Approvals", icon: BadgeCheck },
   { to: "/donations", label: "Donations", icon: HandHeart },
   { to: "/drivers", label: "Drivers", icon: Truck },
@@ -17,34 +17,30 @@ const items = [
 ];
 
 export default function Sidebar() {
-  return (
-    // Full-height rail so it stays the full viewport
-    <div className="h-screen flex flex-col text-black">
-      {/* Brand */}
-      <div className="p-4 font-semibold flex items-center gap-2">
-        <HandHeart className="w-5 h-5" />
-        FoodSaver Lanka
-      </div>
+  const { pathname } = useLocation();
 
-      {/* Nav (use flex so items don't stretch vertically) */}
-      <nav className="bg-amber-400/90 p-2 flex flex-col gap-1">
-        {items.map(({ to, label, icon: Icon, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            className={({ isActive }) =>
-              [
-                "h-11 px-3 inline-flex items-center w-full rounded-xl font-medium transition",
-                isActive ? "bg-amber-500 shadow-inner" : "hover:bg-amber-300/70",
-              ].join(" ")
-            }
-          >
-            <Icon className="w-4 h-4 mr-2" />
-            {label}
-          </NavLink>
-        ))}
+  return (
+    <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-slate-900 text-slate-100 z-40 border-r border-slate-800">
+      <nav className="flex flex-col w-full py-4 gap-1 px-3">
+        <div className="mb-3 px-2 text-sm font-semibold tracking-tight text-slate-200">
+          FoodSaver Lanka
+        </div>
+
+        {NAV.map(({ to, label, icon: Icon }) => {
+          const active = pathname.startsWith(to);
+          return (
+            <NavLink
+              key={to}
+              to={to}
+              className={`w-full h-11 rounded-lg px-3 flex items-center gap-3 text-sm transition
+                ${active ? "bg-blue-600 text-white" : "text-slate-200 hover:bg-slate-800 hover:text-white"}`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
-    </div>
+    </aside>
   );
 }

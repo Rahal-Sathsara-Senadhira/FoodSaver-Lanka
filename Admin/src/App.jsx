@@ -1,30 +1,38 @@
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import Header from "./components/Header";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
+import Topbar from "./components/Topbar";
+import Dashboard from "./pages/Dashboard";
+import Approvals from "./pages/Approvals";
+import Donations from "./pages/Donations";
+import Drivers from "./pages/Drivers";
+import Distribution from "./pages/Distribution";
 
 export default function App() {
-  const { pathname } = useLocation();
-
   return (
-    <div className="min-h-screen grid grid-cols-12">
-      {/* SIDEBAR (sticky on desktop) */}
-      <aside className="col-span-12 lg:col-span-3 xl:col-span-2">
-        <div className="lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto bg-amber-400">
-          <Sidebar />
-        </div>
-      </aside>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      {/* Fixed sidebar */}
+      <Sidebar />
 
-      {/* MAIN */}
-      <div className="col-span-12 lg:col-span-9 xl:col-span-10">
-        <Header />
-        <main className="max-w-7xl mx-auto px-4 py-6">
-          <Outlet key={pathname} />
-        </main>
-        <footer className="max-w-7xl mx-auto px-4 pb-10 pt-4 text-xs text-slate-400">
-          © {new Date().getFullYear()} Food Saver Lanka • Admin
-        </footer>
-      </div>
+      {/* Topbar */}
+      <Topbar />
+
+      {/* Main content */}
+      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 lg:ml-64">
+        <Routes>
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/approvals" element={<Approvals />} />
+          <Route path="/donations" element={<Donations />} />
+          <Route path="/drivers" element={<Drivers />} />
+          <Route path="/distribution" element={<Distribution />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </main>
+
+      <footer className="max-w-7xl mx-auto px-4 md:px-6 pb-10 pt-4 text-xs text-slate-500 lg:ml-64">
+        © {new Date().getFullYear()} Food Saver Lanka
+      </footer>
     </div>
   );
 }
