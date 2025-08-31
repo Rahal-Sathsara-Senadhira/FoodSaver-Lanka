@@ -1,5 +1,5 @@
 // UI <-> API mappers for donations with BOTH kinds
-
+//
 export function toDonationUI(dto) {
   return {
     id: dto.id,

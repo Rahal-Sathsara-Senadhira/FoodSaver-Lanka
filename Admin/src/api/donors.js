@@ -1,4 +1,4 @@
-import client from './client'
+import client from './adapters/client'
 
 export async function listApprovedDonors({ q = '' } = {}) {
   const res = await client.get('/donors', { params: { approved: true, q } })

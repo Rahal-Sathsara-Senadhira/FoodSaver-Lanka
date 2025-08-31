@@ -1,4 +1,4 @@
-import client from './client'
+import client from './adapters/client'
 import { toDonationUI, fromDonationCreate } from './adapters/donations'
 
 export async function listDonations({ page = 1, q = '', status = '' } = {}) {

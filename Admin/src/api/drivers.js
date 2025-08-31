@@ -1,4 +1,4 @@
-import client from './client'
+import client from './adapters/client'
 
 // List available drivers (optionally search by name/vehicle)
 export async function listAvailableDrivers({ q = '' } = {}) {

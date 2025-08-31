@@ -1,4 +1,4 @@
-import client from './client'
+import client from './adapters/client'
 
 // List pickups (scheduled/picked/received)
 export async function listPickups({ page = 1, q = '', status = '' } = {}) {

@@ -123,7 +123,7 @@ export default function NewDonation() {
   const cancelAddCategory = (idx) => updateRow(idx, { addingNewCat: false, newCat: '' })
 
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-none w-full">
       <Breadcrumbs items={[{ label: 'Donations', to: '/donations' }, { label: 'New Donation' }]} />
       <BasePanel
         title="New Donation"
@@ -153,98 +153,95 @@ export default function NewDonation() {
             <div className="grid gap-3">
               {items.map((row, idx) => (
                 <div key={idx} className="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
-                  {/* H-scroll container to prevent clipping on narrower widths */}
-                  <div className="overflow-x-auto">
-                    {/* One-line row on desktop. Set a safe min-width so it never collapses/clips. */}
-                    <div className="min-w-[980px] flex items-start gap-3">
-                      {/* Type */}
-                      <div className="grid gap-1 w-[220px]">
-                        <label className="text-sm">Type</label>
+                  {/* responsive 12-col grid; one line on lg+, wraps below that */}
+                  <div className="grid gap-3 items-end grid-cols-1 sm:grid-cols-2 md:grid-cols-12">
+                    {/* Type: 2 cols on lg (fits one line), bigger on md for comfort */}
+                    <div className="grid gap-1 md:col-span-3 lg:col-span-2">
+                      <label className="text-sm">Type</label>
+                      <select
+                        value={row.type}
+                        onChange={(e) => handleTypeChange(idx, e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
+                      >
+                        {TYPE_OPTS.map((o) => (
+                          <option key={o.value} value={o.value}>{o.label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Category: 4 cols on lg */}
+                    <div className="grid gap-1 md:col-span-5 lg:col-span-4">
+                      <label className="text-sm">Food Category</label>
+                      {!row.addingNewCat ? (
                         <select
-                          value={row.type}
-                          onChange={(e) => handleTypeChange(idx, e.target.value)}
+                          value={row.category}
+                          onChange={(e) => handleCategoryChange(idx, e.target.value)}
                           className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
                         >
-                          {TYPE_OPTS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                          {(cats[row.type] || []).map((c) => (
+                            <option key={c} value={c}>{c}</option>
                           ))}
+                          <option value="__add__">+ Add new Category</option>
                         </select>
-                      </div>
-
-                      {/* Category */}
-                      <div className="grid gap-1 w-[360px]">
-                        <label className="text-sm">Food Category</label>
-                        {!row.addingNewCat ? (
-                          <select
-                            value={row.category}
-                            onChange={(e) => handleCategoryChange(idx, e.target.value)}
-                            className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
+                      ) : (
+                        <div className="flex gap-2">
+                          <input
+                            value={row.newCat}
+                            onChange={(e) => updateRow(idx, { newCat: e.target.value })}
+                            placeholder="New category name"
+                            className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => confirmAddCategory(idx)}
+                            className="px-3 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900"
                           >
-                            {(cats[row.type] || []).map((c) => (
-                              <option key={c} value={c}>{c}</option>
-                            ))}
-                            <option value="__add__">+ Add new Category</option>
-                          </select>
-                        ) : (
-                          <div className="flex gap-2">
-                            <input
-                              value={row.newCat}
-                              onChange={(e) => updateRow(idx, { newCat: e.target.value })}
-                              placeholder="New category name"
-                              className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => confirmAddCategory(idx)}
-                              className="px-3 py-2 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900"
-                            >
-                              Add
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => cancelAddCategory(idx)}
-                              className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                            Add
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => cancelAddCategory(idx)}
+                            className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
 
-                      {/* Qty */}
-                      <div className="grid gap-1 w-[110px]">
-                        <label className="text-sm">Qty</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={row.qty}
-                          onChange={(e) => updateRow(idx, { qty: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
-                        />
-                      </div>
+                    {/* Qty: 1 col on lg */}
+                    <div className="grid gap-1 md:col-span-2 lg:col-span-1">
+                      <label className="text-sm">Qty</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={row.qty}
+                        onChange={(e) => updateRow(idx, { qty: e.target.value })}
+                        className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
+                      />
+                    </div>
 
-                      {/* Description (flexes to fill remaining min width) */}
-                      <div className="grid gap-1 flex-1">
-                        <label className="text-sm">Description</label>
-                        <input
-                          value={row.description}
-                          onChange={(e) => updateRow(idx, { description: e.target.value })}
-                          placeholder={row.type === 'FOOD' ? 'eg. Fried rice with chopcie' : 'eg. Dhal soup with bread'}
-                          className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
-                        />
-                      </div>
+                    {/* Description: 4 cols on lg, full-width on md */}
+                    <div className="grid gap-1 md:col-span-12 lg:col-span-4">
+                      <label className="text-sm">Description</label>
+                      <input
+                        value={row.description}
+                        onChange={(e) => updateRow(idx, { description: e.target.value })}
+                        placeholder={row.type === 'FOOD' ? 'eg. Fried rice with chopcie' : 'eg. Dhal soup with bread'}
+                        className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
+                      />
+                    </div>
 
-                      {/* Remove */}
-                      <div className="flex items-end">
-                        <button
-                          type="button"
-                          onClick={() => removeRow(idx)}
-                          className="p-2 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10"
-                          aria-label="Remove row"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
+                    {/* Remove: 1 col on lg, push to end */}
+                    <div className="flex md:col-span-12 lg:col-span-1 md:justify-start lg:justify-end">
+                      <button
+                        type="button"
+                        onClick={() => removeRow(idx)}
+                        className="p-2 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10"
+                        aria-label="Remove row"
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
                   </div>
 

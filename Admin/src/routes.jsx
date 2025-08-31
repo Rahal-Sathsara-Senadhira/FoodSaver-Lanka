@@ -1,11 +1,13 @@
+// src/routes.jsx
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 import Dashboard from './pages/Dashboard'
 import DonationsList from './pages/Donations/List'
 import NewDonation from './pages/Donations/New'
-import PickupsList from './pages/Pickups/List'   // ← ensure this path & file exist
-import InventoryList from './pages/Inventory/List'
+import PickupsList from './pages/Pickups/List'
+
+import InventoryStock from './pages/Inventory/List'   // Stock page
 import BeneficiariesList from './pages/Beneficiaries/List'
 import PartnersList from './pages/Partners/List'
 import VolunteersList from './pages/Volunteers/List'
@@ -16,16 +18,34 @@ export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
+
+      {/* Donations */}
       <Route path="/donations" element={<DonationsList />} />
       <Route path="/donations/new" element={<NewDonation />} />
-      <Route path="/pickups" element={<PickupsList />} />  {/* ← this is the key */}
-      <Route path="/inventory" element={<InventoryList />} />
+
+      {/* Pickups */}
+      <Route path="/pickups" element={<PickupsList />} />
+
+      {/* Inventory */}
+      <Route path="/inventory" element={<InventoryStock />} />
+
+      {/* Beneficiaries */}
       <Route path="/beneficiaries" element={<BeneficiariesList />} />
+
+      {/* Partners */}
       <Route path="/partners" element={<PartnersList />} />
+
+      {/* Volunteers */}
       <Route path="/volunteers" element={<VolunteersList />} />
+
+      {/* Reports */}
       <Route path="/reports" element={<ReportsOverview />} />
+
+      {/* Settings */}
       <Route path="/settings" element={<SettingsGeneral />} />
-      <Route path="*" element={<div className="p-6">Not Found</div>} />  {/* keep last */}
+
+      {/* Fallback */}
+      <Route path="*" element={<div className="p-6">Not Found</div>} />
     </Routes>
   )
 }
