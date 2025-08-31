@@ -1,0 +1,10 @@
+[package]
+org = "foodsaver"
+name = "backend"
+version = "0.1.0"
+
+[dependencies]
+"ballerina/http" = "2.10.0"
+"ballerinax/mysql" = "1.10.0"
+"ballerina/sql" = "1.11.0"
+"ballerina/crypto" = "2.5.0"

@@ -1,0 +1,6 @@
+export const PACK_SIZES = {
+  FOOD_CONTAINER_PACK: 25,
+  SOUP_CONTAINER_PACK: 18,
+}
+
+export const DEFAULT_PAGE_SIZE = 10
