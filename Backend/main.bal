@@ -1,16 +1,84 @@
 import ballerina/http;
+import ballerina/io;
+import ballerina/crypto;
 import ballerina/sql;
 import ballerinax/mysql;
-import ballerina/crypto;
-import ballerina/io;
 
-// User record type for signup
+// Database configuration
+configurable string dbHost = "localhost";
+configurable string dbUser = "root";
+configurable string dbPassword = "2002";
+configurable int dbPort = 3306;
+configurable string dbName = "foodsaver_db";
+
+// Global MySQL client
+mysql:Client dbClient = check new (dbHost, dbUser, dbPassword, dbName, dbPort);
+
+// Record types matching the new SQL schema
 public type User record {
+    int id;
     string username;
     string password;
 };
 
-// User record for database response
+public type Donor record {
+    string id;
+    string? restaurant_id;
+    string? google_location;
+    string? address;
+    int? user_id;
+};
+
+public type NGO record {
+    int ngo_id;
+    string name;
+    string email;
+    string contact_no;
+    string? contact_name;
+    int? address_street;
+    int? user_id;
+};
+
+public type Driver record {
+    int driver_id;
+    string? first_name;
+    string? last_name;
+    string? vehicle_type;
+    string? vehicle_number;
+    int? age;
+    string? phone_number;
+    string? email;
+    string? NIC;
+    int? address_street;
+    int? user_id;
+};
+
+public type DonorOrder record {
+    int id;
+    string donor_id;
+    string donor_restaurant;
+    string donated_item;
+    string donated_amount;
+    string? delivered_person;
+};
+
+public type RestaurantCredits record {
+    int id;
+    string donorid;
+    int total_credits;
+    int total_donations;
+};
+
+public type FoodRequest record {
+    int id;
+    int request_id;
+    string restaurant;
+    string food_item;
+    string food_amount;
+    string requested_person;
+};
+
+// Additional required record types
 public type UserRecord record {
     int id;
     string username;
@@ -18,31 +86,13 @@ public type UserRecord record {
     string created_at;
 };
 
-// Donor order record types
-public type DonorOrder record {
-    int donor_id;
-    string donor_restaurant;
-    string donated_item;
-    string donated_amount;
-    string? delivered_person;
-};
-
 public type DonorOrderResponse record {
     int id;
-    int donor_id;
+    string donor_id;
     string donor_restaurant;
     string donated_item;
     string donated_amount;
     string? delivered_person;
-};
-
-// Food request record types
-public type FoodRequest record {
-    int request_id;
-    string restaurant;
-    string food_item;
-    string food_amount;
-    string requested_person;
 };
 
 public type FoodRequestResponse record {
@@ -54,335 +104,112 @@ public type FoodRequestResponse record {
     string requested_person;
 };
 
-// Restaurant credits record types
-public type RestaurantCredits record {
-    int id;
-    string restaurant_name;
-    int total_credits;
-    int total_donations;
-};
-
 public type RestaurantCreditsSummary record {
     string restaurant_name;
     int total_credits;
     int total_donations;
-    int rank;
 };
 
-// NGO supplies record types
 public type NgoSupply record {
-    string stock_id;
-    string restaurant_name;
-    string container_type;
-    int number_of_containers;
-    string? notes;
+    int id;
+    string ngo_name;
+    string supply_type;
+    string amount;
+    string location;
 };
 
 public type NgoSupplyResponse record {
     int id;
-    string stock_id;
-    string restaurant_name;
-    string container_type;
-    int number_of_containers;
-    string supplied_date;
-    string? notes;
+    string ngo_name;
+    string supply_type;
+    string amount;
+    string location;
 };
 
-// Delivery driver record types
 public type DeliveryDriver record {
-    string driver_name;
-    string phone_number;
-    string? email;
+    int id;
+    string first_name;
+    string last_name;
     string vehicle_type;
-    string license_number;
-    decimal? current_location_lat;
-    decimal? current_location_lng;
-    boolean? is_available;
+    string vehicle_number;
+    int age;
+    string phone_number;
+    string email;
+    string NIC;
 };
 
 public type DeliveryDriverResponse record {
     int id;
-    string driver_name;
-    string phone_number;
-    string? email;
+    string first_name;
+    string last_name;
     string vehicle_type;
-    string license_number;
-    decimal? current_location_lat;
-    decimal? current_location_lng;
-    boolean is_available;
-    decimal rating;
-    int total_deliveries;
-    string created_at;
-    string updated_at;
-};
-
-// Query result record for NGO deliveries
-public type NgoDeliveryQueryResult record {
-    int id;
-    int order_id;
-    int? driver_id;
-    int ngo_id;
-    int requester_id;
-    string restaurant_name;
-    string food_item;
-    string food_amount;
-    string pickup_location;
-    string delivery_location;
-    string status;
-    string created_at;
-    string? driver_name;
-    string? phone_number;
+    string vehicle_number;
+    int age;
+    string phone_number;
+    string email;
+    string NIC;
 };
 
 public type Delivery record {
-    int order_id;
-    int ngo_id;
-    int requester_id;
-    string restaurant_name;
-    string food_item;
-    string food_amount;
+    int id;
     string pickup_location;
-    string delivery_location;
-    decimal? pickup_lat;
-    decimal? pickup_lng;
-    decimal? delivery_lat;
-    decimal? delivery_lng;
-    string? delivery_notes;
+    string dropoff_location;
+    string status;
+    int driver_id;
+    string delivery_date;
 };
 
 public type DeliveryResponse record {
     int id;
-    int order_id;
-    int? driver_id;
-    int ngo_id;
-    int requester_id;
-    string restaurant_name;
-    string food_item;
-    string food_amount;
     string pickup_location;
-    string delivery_location;
-    decimal? pickup_lat;
-    decimal? pickup_lng;
-    decimal? delivery_lat;
-    decimal? delivery_lng;
+    string dropoff_location;
     string status;
-    string? estimated_delivery_time;
-    string? actual_delivery_time;
-    string? delivery_notes;
-    string created_at;
-    string updated_at;
-    DeliveryDriverResponse? driver;
+    DeliveryDriverResponse driver;
+    string delivery_date;
 };
 
 public type DeliveryWithDriverQueryResult record {
     int id;
-    int order_id;
-    int? driver_id;
-    int ngo_id;
-    int requester_id;
-    string restaurant_name;
-    string food_item;
-    string food_amount;
     string pickup_location;
-    string delivery_location;
-    decimal? pickup_lat;
-    decimal? pickup_lng;
-    decimal? delivery_lat;
-    decimal? delivery_lng;
+    string dropoff_location;
     string status;
-    string? estimated_delivery_time;
-    string? actual_delivery_time;
-    string? delivery_notes;
-    string created_at;
-    string updated_at;
-    string? driver_name;
-    string? phone_number;
-    string? vehicle_type;
+    string delivery_date;
+    int driver_id;
+    string first_name;
+    string last_name;
+    string vehicle_type;
+    string vehicle_number;
+    int age;
+    string phone_number;
+    string email;
+    string NIC;
 };
 
-// Google Maps API configuration
-configurable string googleMapsApiKey = "YOUR_GOOGLE_MAPS_API_KEY_HERE";
+public type NgoDeliveryQueryResult record {
+    int id;
+    string pickup_location;
+    string dropoff_location;
+    string status;
+    string delivery_date;
+};
 
-// Database configuration
-configurable string dbHost = "localhost";
-configurable string dbUser = "root";
-configurable string dbPassword = "";
-configurable int dbPort = 3306;
+public type Shelter record {
+    int id;
+    int request_id;
+    string restaurant;
+    string food_item;
+    string food_amount;
+    string requested_person;
+    int? address_street;
+};
 
-// Global MySQL client - will be properly initialized in init()
-mysql:Client dbClient = check new (
-    host = dbHost,
-    user = dbUser,
-    password = dbPassword,
-    port = dbPort
-);
+public type Address record {
+    int street;
+    string? village;
+    string? city;
+};
 
-function init() returns error? {
-    // Create database if it doesn't exist
-    check createDatabase(dbClient);
-
-    // Use the database
-    sql:ParameterizedQuery useDbQuery = `USE foodsaver_db`;
-    sql:ExecutionResult _ = check dbClient->execute(useDbQuery);
-
-    // Create tables in the database
-    check createTables(dbClient);
-
-    io:println("Database and tables initialized successfully");
-}
-
-function createDatabase(mysql:Client dbClient) returns error? {
-    // Create database if it doesn't exist
-    sql:ParameterizedQuery createDbQuery = `CREATE DATABASE IF NOT EXISTS foodsaver_db`;
-    sql:ExecutionResult _ = check dbClient->execute(createDbQuery);
-    io:println("Database created successfully");
-}
-
-function createTables(mysql:Client dbClient) returns error? {
-    // Create users table
-    sql:ParameterizedQuery createUsersTable = `
-        CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(255) UNIQUE NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )`;
-    sql:ExecutionResult _ = check dbClient->execute(createUsersTable);
-
-    // Create donor_orders table
-    sql:ParameterizedQuery createDonorOrdersTable = `
-        CREATE TABLE IF NOT EXISTS donor_orders (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            donor_id INT NOT NULL,
-            donor_restaurant VARCHAR(255) NOT NULL,
-            donated_item VARCHAR(255) NOT NULL,
-            donated_amount VARCHAR(100) NOT NULL,
-            delivered_person VARCHAR(255),
-            FOREIGN KEY (donor_id) REFERENCES users(id) ON DELETE CASCADE
-        )`;
-    sql:ExecutionResult _ = check dbClient->execute(createDonorOrdersTable);
-
-    // Create food_requests table
-    sql:ParameterizedQuery createFoodRequestsTable = `
-        CREATE TABLE IF NOT EXISTS food_requests (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            request_id INT NOT NULL,
-            restaurant VARCHAR(255) NOT NULL,
-            food_item VARCHAR(255) NOT NULL,
-            food_amount VARCHAR(100) NOT NULL,
-            requested_person VARCHAR(255) NOT NULL,
-            FOREIGN KEY (request_id) REFERENCES users(id) ON DELETE CASCADE
-        )`;
-    sql:ExecutionResult _ = check dbClient->execute(createFoodRequestsTable);
-
-    // Create restaurant_credits table
-    sql:ParameterizedQuery createRestaurantCreditsTable = `
-        CREATE TABLE IF NOT EXISTS restaurant_credits (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            restaurant_name VARCHAR(255) NOT NULL UNIQUE,
-            total_credits INT DEFAULT 0,
-            total_donations INT DEFAULT 0
-        )`;
-    sql:ExecutionResult _ = check dbClient->execute(createRestaurantCreditsTable);
-
-    // Create ngo_supplies table
-    sql:ParameterizedQuery createNgoSuppliesTable = `
-        CREATE TABLE IF NOT EXISTS ngo_supplies (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            stock_id VARCHAR(100) NOT NULL UNIQUE,
-            restaurant_name VARCHAR(255) NOT NULL,
-            container_type VARCHAR(100) NOT NULL,
-            number_of_containers INT NOT NULL,
-            supplied_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            notes TEXT
-        )`;
-    sql:ExecutionResult _ = check dbClient->execute(createNgoSuppliesTable);
-
-    // Create delivery_drivers table
-    sql:ParameterizedQuery createDeliveryDriversTable = `
-        CREATE TABLE IF NOT EXISTS delivery_drivers (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            driver_name VARCHAR(255) NOT NULL,
-            phone_number VARCHAR(20) NOT NULL,
-            email VARCHAR(255) UNIQUE,
-            vehicle_type VARCHAR(100) NOT NULL,
-            license_number VARCHAR(100) NOT NULL,
-            current_location_lat DECIMAL(10, 8),
-            current_location_lng DECIMAL(11, 8),
-            is_available BOOLEAN DEFAULT TRUE,
-            rating DECIMAL(3, 2) DEFAULT 5.00,
-            total_deliveries INT DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )`;
-    sql:ExecutionResult _ = check dbClient->execute(createDeliveryDriversTable);
-
-    // Create deliveries table
-    sql:ParameterizedQuery createDeliveriesTable = `
-        CREATE TABLE IF NOT EXISTS deliveries (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            order_id INT NOT NULL,
-            driver_id INT,
-            ngo_id INT NOT NULL,
-            requester_id INT NOT NULL,
-            restaurant_name VARCHAR(255) NOT NULL,
-            food_item VARCHAR(255) NOT NULL,
-            food_amount VARCHAR(100) NOT NULL,
-            pickup_location VARCHAR(500) NOT NULL,
-            delivery_location VARCHAR(500) NOT NULL,
-            pickup_lat DECIMAL(10, 8),
-            pickup_lng DECIMAL(11, 8),
-            delivery_lat DECIMAL(10, 8),
-            delivery_lng DECIMAL(11, 8),
-            status VARCHAR(50) DEFAULT 'pending',
-            estimated_delivery_time TIMESTAMP NULL,
-            actual_delivery_time TIMESTAMP NULL,
-            delivery_notes TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (driver_id) REFERENCES delivery_drivers(id) ON DELETE SET NULL
-        )`;
-    sql:ExecutionResult _ = check dbClient->execute(createDeliveriesTable);
-
-    // Create indexes
-    sql:ParameterizedQuery createUsernameIndex = `CREATE INDEX IF NOT EXISTS idx_username ON users (username)`;
-    sql:ExecutionResult _ = check dbClient->execute(createUsernameIndex);
-
-    sql:ParameterizedQuery createDonorIdIndex = `CREATE INDEX IF NOT EXISTS idx_donor_id ON donor_orders (donor_id)`;
-    sql:ExecutionResult _ = check dbClient->execute(createDonorIdIndex);
-
-    sql:ParameterizedQuery createRequestIdIndex = `CREATE INDEX IF NOT EXISTS idx_request_id ON food_requests (request_id)`;
-    sql:ExecutionResult _ = check dbClient->execute(createRequestIdIndex);
-
-    sql:ParameterizedQuery createRestaurantNameIndex = `CREATE INDEX IF NOT EXISTS idx_restaurant_name ON restaurant_credits (restaurant_name)`;
-    sql:ExecutionResult _ = check dbClient->execute(createRestaurantNameIndex);
-
-    sql:ParameterizedQuery createNgoStockIdIndex = `CREATE INDEX IF NOT EXISTS idx_ngo_stock_id ON ngo_supplies (stock_id)`;
-    sql:ExecutionResult _ = check dbClient->execute(createNgoStockIdIndex);
-
-    sql:ParameterizedQuery createNgoRestaurantIndex = `CREATE INDEX IF NOT EXISTS idx_ngo_restaurant ON ngo_supplies (restaurant_name)`;
-    sql:ExecutionResult _ = check dbClient->execute(createNgoRestaurantIndex);
-
-    // Driver system indexes
-    sql:ParameterizedQuery createDriverAvailableIndex = `CREATE INDEX IF NOT EXISTS idx_driver_available ON delivery_drivers (is_available)`;
-    sql:ExecutionResult _ = check dbClient->execute(createDriverAvailableIndex);
-
-    sql:ParameterizedQuery createDriverVehicleIndex = `CREATE INDEX IF NOT EXISTS idx_driver_vehicle ON delivery_drivers (vehicle_type)`;
-    sql:ExecutionResult _ = check dbClient->execute(createDriverVehicleIndex);
-
-    // Delivery indexes
-    sql:ParameterizedQuery createDeliveryStatusIndex = `CREATE INDEX IF NOT EXISTS idx_delivery_status ON deliveries (status)`;
-    sql:ExecutionResult _ = check dbClient->execute(createDeliveryStatusIndex);
-
-    sql:ParameterizedQuery createDeliveryDriverIndex = `CREATE INDEX IF NOT EXISTS idx_delivery_driver ON deliveries (driver_id)`;
-    sql:ExecutionResult _ = check dbClient->execute(createDeliveryDriverIndex);
-
-    sql:ParameterizedQuery createDeliveryOrderIndex = `CREATE INDEX IF NOT EXISTS idx_delivery_order ON deliveries (order_id)`;
-    sql:ExecutionResult _ = check dbClient->execute(createDeliveryOrderIndex);
-
-    io:println("All database tables and indexes created successfully");
-}
-
+// Add your DB access and service logic below
 # Calculate credits based on donated amount
 function calculateCredits(string amount) returns int {
     // Parse the amount string (e.g., "50 kg", "200 ml", "10 pieces")

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <style>
+    .box { fill: #D6EAF8; stroke: #1565C0; stroke-width: 2px; rx:8px; }
+    .db { fill: #FFF2CC; stroke: #D78900; stroke-width:2px; rx:8px }
+    .client { fill: #C6E7FF; stroke: #0B76C2; stroke-width:2px; rx:8px }
+    .ext { fill: #E8DAEF; stroke: #8E44AD; stroke-width:2px; rx:8px }
+    .files { fill:#F2F3F4; stroke:#7F8C8D; stroke-width:1px; rx:6px }
+    .label { font: 14px sans-serif; fill:#111 }
+    .small { font: 12px sans-serif; fill:#333 }
+    .path { stroke:#333; stroke-width:2px; fill:none; marker-end:url(#arrow) }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Clients -->
+  <g>
+    <rect x="40" y="40" width="260" height="80" class="client" />
+    <text x="70" y="70" class="label">React client (Public)</text>
+    <text x="70" y="90" class="small">Frontend/src (Vite)</text>
+
+    <rect x="40" y="140" width="260" height="80" class="client" />
+    <text x="70" y="170" class="label">React Admin Panel</text>
+    <text x="70" y="190" class="small">Admin/src</text>
+  </g>
+
+  <!-- Backend -->
+  <g>
+    <rect x="380" y="60" width="360" height="220" class="box" />
+    <text x="470" y="90" class="label">Ballerina API</text>
+    <text x="395" y="115" class="small">Backend/main.bal (service startup)</text>
+    <text x="395" y="135" class="small">Backend/models/*.bal</text>
+    <text x="395" y="155" class="small">Backend/services/*.bal</text>
+    <text x="395" y="175" class="small">Backend/db/*.bal</text>
+    <text x="395" y="195" class="small">config via Ballerina `configurable`</text>
+  </g>
+
+  <!-- Database -->
+  <g>
+    <rect x="820" y="60" width="420" height="300" class="db" />
+    <text x="900" y="90" class="label">MySQL Database</text>
+    <text x="840" y="120" class="small">Tables (schema): users, donor, ngo, driver</text>
+    <text x="840" y="140" class="small">donor_orders, food_requests, shelter, restaurant_credits</text>
+    <text x="840" y="160" class="small">address</text>
+    <rect x="860" y="190" width="340" height="90" class="files" />
+    <text x="880" y="210" class="small">Backend/sql/*.sql</text>
+    <text x="880" y="230" class="small">create_users_table.sql</text>
+    <text x="880" y="250" class="small">create_donor_table.sql, create_ngo_table.sql</text>
+    <text x="880" y="270" class="small">create_driver_table.sql, create_donor_orders_table.sql</text>
+  </g>
+
+  <!-- External services -->
+  <g>
+    <rect x="380" y="310" width="220" height="70" class="ext" />
+    <text x="400" y="340" class="label">Google Maps API</text>
+    <text x="400" y="355" class="small">(geocoding, places) - key in config</text>
+
+    <rect x="620" y="310" width="160" height="70" class="ext" />
+    <text x="640" y="340" class="label">SMS Gateway</text>
+    <text x="640" y="355" class="small">(optional) notifications & OTP</text>
+  </g>
+
+  <!-- Arrows: Clients -> Backend -->
+  <path class="path" d="M300,80 C340,80 360,80 380,120" />
+  <path class="path" d="M300,180 C340,180 360,180 380,200" />
+
+  <!-- Backend -> DB -->
+  <path class="path" d="M740,170 C780,170 800,170 820,170" />
+
+  <!-- Backend -> External -->
+  <path class="path" d="M560,230 C560,270 560,290 560,320" />
+  <path class="path" d="M560,230 C640,240 620,290 620,320" />
+
+  <!-- DB <-> SQL files (represented) -->
+  <path class="path" d="M1000,280 C1000,300 1000,320 1000,350" />
+
+  <!-- Legend -->
+  <rect x="40" y="700" width="1320" height="160" rx="8" fill="#FFFFFF" stroke="#DDD" />
+  <text x="60" y="730" class="label">Legend & repo mapping</text>
+  <text x="60" y="755" class="small">React client: Frontend/src  — Admin: Admin/src</text>
+  <text x="60" y="775" class="small">Ballerina API: Backend/main.bal + Backend/{models,services,db}</text>
+  <text x="60" y="795" class="small">SQL schema files: Backend/sql/*.sql</text>
+
+  <!-- Footer note -->
+  <text x="60" y="840" class="small">Generated diagram: simple architectural overview. Run conversion to PNG if needed.</text>
+</svg>
