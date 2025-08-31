@@ -18,6 +18,7 @@ import BeneficiaryOrders from "./pages/Beneficiaries/Orders.jsx";
 import PartnersNGOs from "./pages/Partners/NGOs.jsx";
 import PartnersDonors from "./pages/Partners/Donors.jsx";
 import VolunteersDrivers from "./pages/Volunteers/Drivers.jsx";
+import OrderDetail from "./pages/Beneficiaries/OrderDetail.jsx";
 
 export default function AppRoutes() {
   return (
@@ -38,7 +39,8 @@ export default function AppRoutes() {
       <Route path="/beneficiaries" element={<BeneficiariesList />} />
       <Route path="/beneficiaries/shelters" element={<BeneficiaryShelters />} />
       <Route path="/beneficiaries/orders" element={<BeneficiaryOrders />} />
-
+      <Route path="/beneficiaries/orders/:orderId" element={<OrderDetail />} />
+      
       {/* Partners */}
       <Route path="/partners" element={<PartnersList />} />
       <Route path="/partners/ngos" element={<PartnersNGOs />} />
@@ -47,7 +49,7 @@ export default function AppRoutes() {
       {/* Volunteers */}
       <Route path="/volunteers" element={<VolunteersList />} />
       <Route path="/volunteers/drivers" element={<VolunteersDrivers />} />
-      
+
       {/* Reports */}
       <Route path="/reports" element={<ReportsOverview />} />
 

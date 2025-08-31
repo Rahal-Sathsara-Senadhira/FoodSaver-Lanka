@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import Breadcrumbs from '../../components/common/Breadcrumbs'
 import BasePanel from '../../components/common/BasePanel'
 import { useShelterOrders } from '../../hooks/useBeneficiaries.js'
@@ -20,12 +21,15 @@ function StatusBadge({ status }) {
 }
 
 export default function BeneficiaryOrders() {
+  const nav = useNavigate()
   const [q, setQ] = React.useState('')
   const [status, setStatus] = React.useState('')
 
   const { data, isLoading } = useShelterOrders({ q, status, page: 1 })
   const rows = data?.data || []
   const statuses = data?.meta?.statuses || []
+
+  const goDetail = (id) => nav(`/beneficiaries/orders/${id}`)
 
   return (
     <div className="max-w-none w-full">
@@ -74,7 +78,14 @@ export default function BeneficiaryOrders() {
               ) : rows.length === 0 ? (
                 <tr><td colSpan={6} className="px-4 py-6 text-slate-500">No orders found.</td></tr>
               ) : rows.map((o) => (
-                <tr key={o.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                <tr
+                  key={o.id}
+                  className="hover:bg-slate-50 dark:hover:bg-slate-800/60 cursor-pointer"
+                  onClick={() => goDetail(o.id)}
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') goDetail(o.id) }}
+                  title="Open order details"
+                >
                   <td className="px-4 py-3 text-slate-900 dark:text-white">{o.ngoName}</td>
                   <td className="px-4 py-3">{o.shelterName}</td>
                   <td className="px-4 py-3 text-right">{o.foodPacks}</td>
