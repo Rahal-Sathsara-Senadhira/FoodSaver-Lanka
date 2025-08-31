@@ -1,6 +1,6 @@
 import {
   LayoutDashboard,
-  HandHeart,      // donation-like
+  HandHeart,
   Truck,
   Boxes,
   Users,
@@ -18,42 +18,34 @@ export const nav = [
     icon: HandHeart,
     children: [
       { label: 'All Donations', to: '/donations' },
+      { label: 'New Donation', to: '/donations/new' },   // <-- add this line
     ]
   },
+
   {
     label: 'Pickups',
     icon: Truck,
-    children: [
-      { label: 'Pickup Requests', to: '/pickups' },
-    ]
+    children: [{ label: 'Pickup Requests', to: '/pickups' }]
   },
   {
     label: 'Inventory',
     icon: Boxes,
-    children: [
-      { label: 'Stock', to: '/inventory' },
-    ]
+    children: [{ label: 'Stock', to: '/inventory' }]
   },
   {
     label: 'Beneficiaries',
     icon: Users,
-    children: [
-      { label: 'Organizations / Individuals', to: '/beneficiaries' },
-    ]
+    children: [{ label: 'Organizations / Individuals', to: '/beneficiaries' }]
   },
   {
     label: 'Partners',
     icon: Building2,
-    children: [
-      { label: 'NGOs & Donors', to: '/partners' },
-    ]
+    children: [{ label: 'NGOs & Donors', to: '/partners' }]
   },
   {
     label: 'Volunteers',
     icon: UserRound,
-    children: [
-      { label: 'Roster', to: '/volunteers' },
-    ]
+    children: [{ label: 'Roster', to: '/volunteers' }]
   },
   { label: 'Reports', to: '/reports', icon: BarChart3 },
   { label: 'Settings', to: '/settings', icon: Settings },
