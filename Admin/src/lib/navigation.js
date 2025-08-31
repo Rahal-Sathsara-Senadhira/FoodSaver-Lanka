@@ -7,46 +7,56 @@ import {
   Building2,
   UserRound,
   BarChart3,
-  Settings
-} from 'lucide-react'
+  Settings,
+} from "lucide-react";
 
 export const nav = [
-  { label: 'Dashboard', to: '/', icon: LayoutDashboard },
+  { label: "Dashboard", to: "/", icon: LayoutDashboard },
 
   {
-    label: 'Donations',
+    label: "Donations",
     icon: HandHeart,
     children: [
-      { label: 'All Donations', to: '/donations' },
-      { label: 'New Donation', to: '/donations/new' },   // <-- add this line
-    ]
+      { label: "All Donations", to: "/donations" },
+      { label: "New Donation", to: "/donations/new" }, // <-- add this line
+    ],
   },
 
   {
-    label: 'Pickups',
+    label: "Pickups",
     icon: Truck,
-    children: [{ label: 'Pickup Requests', to: '/pickups' }]
+    children: [{ label: "Pickup Requests", to: "/pickups" }],
   },
   {
-    label: 'Inventory',
+    label: "Inventory",
     icon: Boxes,
-    children: [{ label: 'Stock', to: '/inventory' }]
+    children: [{ label: "Stock", to: "/inventory" }],
   },
   {
-    label: 'Beneficiaries',
+    label: "Beneficiaries",
     icon: Users,
-    children: [{ label: 'Organizations / Individuals', to: '/beneficiaries' }]
+    children: [
+      { label: "Shelters", to: "/beneficiaries/shelters" },
+      { label: "Orders", to: "/beneficiaries/orders" },
+    ],
   },
   {
-    label: 'Partners',
+    label: "Partners",
     icon: Building2,
-    children: [{ label: 'NGOs & Donors', to: '/partners' }]
+    children: [
+      { label: "NGOs", to: "/partners/ngos" },
+      { label: "Donors", to: "/partners/donors" },
+    ],
   },
+
   {
-    label: 'Volunteers',
+    label: "Volunteers",
     icon: UserRound,
-    children: [{ label: 'Roster', to: '/volunteers' }]
+    children: [
+      
+      { label: "Drivers", to: "/volunteers/drivers" },
+    ],
   },
-  { label: 'Reports', to: '/reports', icon: BarChart3 },
-  { label: 'Settings', to: '/settings', icon: Settings },
-]
+  { label: "Reports", to: "/reports", icon: BarChart3 },
+  { label: "Settings", to: "/settings", icon: Settings },
+];
